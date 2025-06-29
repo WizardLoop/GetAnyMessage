@@ -1,5 +1,6 @@
 # 📨🔓 GetAnyMessage
 ### get any message from any chat!
+### Save Restricted Content Easily.
 **GetAnyMessage** is a powerful Telegram bot that lets you retrieve **restricted messages** (those that cannot be forwarded or copied) from any chat.
 
 > 📨🔓 [@GetAnyMessageRobot](https://GetAnyMessageRobot.t.me)
