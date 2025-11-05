@@ -8,9 +8,7 @@
 [![AGPL License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F%20-blue)](https://github.com/WizardLoop/GetAnyMessage)
 [![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
-
-[![Telegram](https://img.shields.io/badge/Official%20Bot-000000?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/GetAnyMessageRobot)
+[![PHP 8.4](https://img.shields.io/badge/PHP-8.4-blue)](https://www.php.net/)
 
 ---
 
