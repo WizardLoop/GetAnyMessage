@@ -95,7 +95,7 @@ $numChannels = $numSupergroups = $numChats = $numBots = 0;
 
         foreach ($dialogs as $peer) {
             try {
-                $info = $this->getInfo($peer);
+                $info = $this->context->getInfo($peer);
                 if (!isset($info['type'])) continue;
                 switch ($info['type']) {
                     case 'channel': $numChannels++; break;
