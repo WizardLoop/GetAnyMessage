@@ -1,6 +1,6 @@
-# 🤝 Contributing to JewishPulse
+# 🤝 Contributing to GetAnyMessage
 
-Thank you for considering contributing to **JewishPulse**! We greatly appreciate your effort to help improve this open-source project. This document will guide you through the process of contributing, including how to add new features and support for additional languages.
+Thank you for considering contributing to **GetAnyMessage**! We greatly appreciate your effort to help improve this open-source project. This document will guide you through the process of contributing, including how to add new features and support for additional languages.
 
 ## 🧩 Ways to Contribute
 
