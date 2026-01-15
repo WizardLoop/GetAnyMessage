@@ -1,0 +1,23 @@
+name: Feature Request ✨
+description: Suggest a new feature for JewishPulse!
+title: "[Feature] "
+labels: [enhancement, feature]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Please describe the new feature you'd like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Usage Example
+      description: Show a code example or output illustrating how this feature would work.
+  - type: checkboxes
+    id: shabbat
+    attributes:
+      label: Does this add new feature to the JewishPulse?
+      options:
+        - label: Yes! 

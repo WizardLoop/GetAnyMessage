@@ -1,0 +1,18 @@
+name: Improvement / Question 🤔
+description: Suggest an improvement or ask a question about JewishPulse.
+title: "[Q] "
+labels: [question, improvement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / Question
+      description: Clearly describe your suggestion or question.
+    validations:
+      required: true
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Are you planning to submit a PR?
+      options:
+        - label: Yes, I will submit a PR with this improvement/answer.
