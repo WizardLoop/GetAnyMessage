@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We release security updates for the latest stable version of JewishPulse. Please ensure you are using the most recent release.
+We release security updates for the latest stable version of GetAnyMessage. Please ensure you are using the most recent release.
 
 | Version | Supported          |
 |---------|--------------------|
@@ -20,7 +20,7 @@ If you discover a security vulnerability **in the code, logic, or infrastructure
 
 ### 📧 Contact
 
-**Email:** [security@wizardloop.com](mailto:security@wizardloop.com)
+**Telegram:** [wizardloop](wizardloop.t.me/)
 
 We will respond within **72 hours** and aim to resolve all verified issues promptly.
 
@@ -41,8 +41,7 @@ We respectfully ask that:
 
 This security policy applies to:
 
-- The source code in [JewishPulse GitHub repository](https://github.com/WizardLoop/JewishPulse)
-- Data handling, language parsing, and Shabbat timing APIs usage within the bot
+- The source code in [GetAnyMessage GitHub repository](https://github.com/WizardLoop/GetAnyMessage)
 - Webhooks or API integrations developed under this project
 
 ---
