@@ -1,0 +1,24 @@
+# Force LF line endings
+* text=auto eol=lf
+
+# Set file types
+*.php text
+*.sh text eol=lf
+*.md text
+*.yml text
+*.json text
+*.xml text
+*.env text
+
+# Exclude tests and dev files from export
+/tests export-ignore
+phpunit.xml export-ignore
+phpcs.xml export-ignore
+php-cs-fixer.dist.php export-ignore
+Makefile export-ignore
+.dockerignore export-ignore
+composer.lock export-ignore
+
+README.md export-ignore
+CHANGELOG.md export-ignore
+

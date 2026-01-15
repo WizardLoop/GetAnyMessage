@@ -1,0 +1,27 @@
+name: Bug Report 🐞
+description: Report a bug or issue with GetAnyMessage.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: bug
+    attributes:
+      label: What happened?
+      description: Clearly describe the problem and what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: List the exact steps to reproduce this bug.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: PHP version and OS.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs/output
+      description: Include any output or error logs if relevant.

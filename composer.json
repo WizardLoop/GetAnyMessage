@@ -1,0 +1,35 @@
+{
+  "name": "wizardloop/getanymessage",
+  "description": "A Telegram Bot to receive messages from restricted chats.",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "danog/madelineproto": "^8.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0",
+    "squizlabs/php_codesniffer": "^3.7",
+    "friendsofphp/php-cs-fixer": "^3.50"
+  },
+  "autoload": {
+    "psr-4": {
+      "GetAnyMessage\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "GetAnyMessage\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit --configuration phpunit.xml",
+    "lint": "phpcs --standard=phpcs.xml",
+    "fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+  },
+  "license": "AGPL-3.0-only",
+  "authors": [
+    {
+      "name": "WizardLoop"
+    }
+  ]
+}

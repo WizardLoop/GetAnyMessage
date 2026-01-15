@@ -1,0 +1,12 @@
+services:
+  getanymessage:
+    image: hub.madelineproto.xyz/danog/madelineproto
+    restart: always
+    init: true
+    tty: true
+    working_dir: /app/src
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    command: php /app/src/bot.php
