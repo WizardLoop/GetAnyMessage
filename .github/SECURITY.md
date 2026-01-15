@@ -47,5 +47,3 @@ This security policy applies to:
 ---
 
 ## 🙏 Thank You
-
-We value and appreciate your effort in making JewishPulse safer for everyone. Toda raba! 🙌
