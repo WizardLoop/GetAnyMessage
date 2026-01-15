@@ -40,7 +40,7 @@ Project maintainers have the right and responsibility to remove, edit, or reject
 
 ### 🛡 Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project team at https://jewishpulse.t.me
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project team at https://wizardloop.t.me
 
 All complaints will be reviewed and investigated promptly and fairly.
 
