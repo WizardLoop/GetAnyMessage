@@ -1,28 +1,19 @@
 # 📨🔓 GetAnyMessage
-### get any message from any chat!
+### get any message from public chats!
 ### Save Restricted Content Easily.
-**GetAnyMessage** is a powerful Telegram bot that lets you retrieve **restricted messages** (those that cannot be forwarded or copied) from any chat.
-
-> 📨🔓 [@GetAnyMessageRobot](https://GetAnyMessageRobot.t.me)
+**GetAnyMessage** is a powerful Telegram bot that lets you retrieve **restricted messages** (those that cannot be forwarded or copied).
 
 [![AGPL License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F%20-blue)](https://github.com/WizardLoop/GetAnyMessage)
 [![Docker Ready](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
-
-[![Telegram](https://img.shields.io/badge/Official%20Bot-000000?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/GetAnyMessageRobot)
 
 ---
 
 ## 📦 Features
 
-- 🔓 Retrieve restricted messages from any chat
+- 🔓 Retrieve restricted messages from public chat
 - 📁 file support up to 4GB
-- 🧩 Supports groups, channels, private messages, bots
-- ⭐️ animated emoji's support
-- 💬 All types of messages
 - 🔁 Bypass Telegram forward/copy restrictions
-- ⚙️ Built with `MadelineProto` & PHP Coroutine Engine
 
 ---
 
