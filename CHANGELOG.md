@@ -18,3 +18,10 @@ All notable changes to the **GetAnyMessage** project will be documented in this 
 - source code button url.
 
 ---
+
+## [v1.0.2] - 2026-01-15
+
+### Added:
+- Update statUsers in: **src/Handlers/AdminPanel.php**
+
+---
