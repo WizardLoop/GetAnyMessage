@@ -1,5 +1,5 @@
 name: Feature Request ✨
-description: Suggest a new feature for JewishPulse!
+description: Suggest a new feature for GetAnyMessage!
 title: "[Feature] "
 labels: [enhancement, feature]
 body:
@@ -18,6 +18,6 @@ body:
   - type: checkboxes
     id: shabbat
     attributes:
-      label: Does this add new feature to the JewishPulse?
+      label: Does this add new feature to the GetAnyMessage?
       options:
         - label: Yes! 
