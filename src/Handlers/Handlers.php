@@ -37,8 +37,6 @@ $welcome_button1_txt = $translate['welcome_button1_txt'] ?? '👥 Support Chat';
 $welcome_button1_data = $translate['welcome_button1_data'] ?? 'https://t.me/GetAnyMessageChat';
 $welcome_button2_txt = $translate['welcome_button2_txt'] ?? 'Updates Channel 🔔';
 $welcome_button2_data = $translate['welcome_button2_data'] ?? 'https://t.me/GetAnyMessageUpdates';
-$welcome_button10_txt = $translate['welcome_button10_txt'] ?? 'Donate 🦾';
-$welcome_button10_data = $translate['welcome_button10_data'] ?? 'Donate';
 $source_code_txt = $translate['source_code_txt'] ?? '⭐️ Source Code 🔗';
 $source_code_url = $translate['source_code_url'] ?? 'https://github.com/WizardLoop/GetAnyMessage';
 
@@ -48,7 +46,7 @@ $language_button = $language_flag . " " . $language_name;
 $language_data = $translate['language_data'] ?? 'setLanguage';
 
 $bot_API_markup[] = [['text'=>$welcome_button1_txt,'url'=>$welcome_button1_data],['text'=>$welcome_button2_txt,'url'=>$welcome_button2_data]];
-$bot_API_markup[] = [['text'=>$welcome_button10_txt,'callback_data'=>$welcome_button10_data]];
+$bot_API_markup[] = [['text'=>$source_code_txt,'url'=>$source_code_url]];
 $bot_API_markup[] = [['text'=>$language_button,'callback_data'=>$language_data]];
 $bot_API_markup = [ 'inline_keyboard'=> $bot_API_markup,];
 
@@ -108,8 +106,6 @@ $welcome_button1_txt = $translate['welcome_button1_txt'] ?? '👥 Support Chat';
 $welcome_button1_data = $translate['welcome_button1_data'] ?? 'https://t.me/GetAnyMessageChat';
 $welcome_button2_txt = $translate['welcome_button2_txt'] ?? 'Updates Channel 🔔';
 $welcome_button2_data = $translate['welcome_button2_data'] ?? 'https://t.me/GetAnyMessageUpdates';
-$welcome_button10_txt = $translate['welcome_button10_txt'] ?? 'Donate 🦾';
-$welcome_button10_data = $translate['welcome_button10_data'] ?? 'Donate';
 $source_code_txt = $translate['source_code_txt'] ?? '⭐️ Source Code 🔗';
 $source_code_url = $translate['source_code_url'] ?? 'https://github.com/WizardLoop/GetAnyMessage';
 
@@ -119,7 +115,7 @@ $language_button = $language_flag . " " . $language_name;
 $language_data = $translate['language_data'] ?? 'setLanguage';
 
 $bot_API_markup[] = [['text'=>$welcome_button1_txt,'url'=>$welcome_button1_data],['text'=>$welcome_button2_txt,'url'=>$welcome_button2_data]];
-$bot_API_markup[] = [['text'=>$welcome_button10_txt,'callback_data'=>$welcome_button10_data]];
+$bot_API_markup[] = [['text'=>$source_code_txt,'url'=>$source_code_url]];
 $bot_API_markup[] = [['text'=>$language_button,'callback_data'=>$language_data]];
 $bot_API_markup = [ 'inline_keyboard'=> $bot_API_markup,];
 

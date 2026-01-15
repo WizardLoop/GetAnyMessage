@@ -7,6 +7,4 @@ services:
     working_dir: /app/src
     volumes:
       - ./:/app
-    env_file:
-      - .env
     command: php /app/src/bot.php
