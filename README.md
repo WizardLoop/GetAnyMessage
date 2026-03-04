@@ -14,7 +14,7 @@
 - 🔓 Retrieve restricted messages from public chat
 - 📁 file support up to 4GB
 - 🔁 Bypass Telegram forward/copy restrictions
-
+- (Soon the full bot includes copying messages from private chat and much more!)
 ---
 
 ### 🛠 Installation Setup
@@ -124,7 +124,7 @@ Pull requests are welcome!
 
 ## 📄 License
 
-Licensed under the **GNU AGPL-3.0** — see [`LICENSE`](LICENSE).
+Licensed under the **GNU AGPL-3.0** see [`LICENSE`](LICENSE).
 
 ---
 
