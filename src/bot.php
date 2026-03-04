@@ -493,27 +493,27 @@ $sentMessage = $this->messages->sendMessage(
 );
 
 $sentMessage2 = $this->extractMessageId($sentMessage);
-Amp\File\write(__DIR__."/data/messagetoeditbroadcast1.txt", "$sentMessage2");
-Amp\File\write(__DIR__."/data/messagetoeditbroadcast2.txt", "$senderId");
+\Amp\File\write(__DIR__."/data/messagetoeditbroadcast1.txt", "$sentMessage2");
+\Amp\File\write(__DIR__."/data/messagetoeditbroadcast2.txt", "$senderId");
 
  if (file_exists(__DIR__."/data/$senderId/txt.txt")) {
-$filexmsgidtxt = Amp\File\read(__DIR__."/data/$senderId/txt.txt");  
+$filexmsgidtxt = \Amp\File\read(__DIR__."/data/$senderId/txt.txt");  
 }else{
 $filexmsgidtxt = null; 
 }
   if (file_exists(__DIR__."/data/$senderId/ent.txt")) {
-$filexmsgident = json_decode(Amp\File\read(__DIR__."/data/$senderId/ent.txt"),true);  
+$filexmsgident = json_decode(\Amp\File\read(__DIR__."/data/$senderId/ent.txt"),true);  
   }else{
 $filexmsgident = null;  
   }	  
   if (file_exists(__DIR__."/data/$senderId/media.txt")) {
-$filexmsgidmedia = Amp\File\read(__DIR__."/data/$senderId/media.txt");  
+$filexmsgidmedia = \Amp\File\read(__DIR__."/data/$senderId/media.txt");  
   }else{
 $filexmsgidmedia = null;  
   }	 
 
     if (file_exists(__DIR__."/data/broadcastsend.txt")) {
-$check2 = Amp\File\read(__DIR__."/data/broadcastsend.txt");    
+$check2 = \Amp\File\read(__DIR__."/data/broadcastsend.txt");    
 if($check2 == "USERS"){
 
 
@@ -811,9 +811,9 @@ $progressStr = (string) $progress;
 if (time() - $this->lastLog > 5 || $progress->status === Status::GATHERING_PEERS) {
             $this->lastLog = time();
  if (file_exists(__DIR__."/data/messagetoeditbroadcast2.txt")) {
-$filexmsgid1 = Amp\File\read(__DIR__."/data/messagetoeditbroadcast2.txt");  
+$filexmsgid1 = \Amp\File\read(__DIR__."/data/messagetoeditbroadcast2.txt");  
  if (file_exists(__DIR__."/data/messagetoeditbroadcast1.txt")) {
-$filexmsgid2 = Amp\File\read(__DIR__."/data/messagetoeditbroadcast1.txt");  
+$filexmsgid2 = \Amp\File\read(__DIR__."/data/messagetoeditbroadcast1.txt");  
 			try {
 $this->messages->editMessage(peer: $filexmsgid1, id: $filexmsgid2, message: "⏳ $progressStr", reply_markup: null);
 } catch (Throwable $e) {}
@@ -824,7 +824,7 @@ $this->messages->editMessage(peer: $filexmsgid1, id: $filexmsgid2, message: "⏳
 if (time() - $this->lastLog > 5 || $progress->status === Status::FINISHED) {
             $this->lastLog = time();
 if (file_exists(__DIR__."/data/broadcastsend.txt")) {
-$broadcast_send = Amp\File\read(__DIR__."/data/broadcastsend.txt");
+$broadcast_send = \Amp\File\read(__DIR__."/data/broadcastsend.txt");
 }
 if (!file_exists(__DIR__."/data/broadcastsend.txt")) {
 $broadcast_send = "ALL";
@@ -835,10 +835,10 @@ $sucessCount = $progress->successCount;
 $sucessCount2 = $progress->failCount;
 
  if (file_exists(__DIR__."/data/messagetoeditbroadcast2.txt")) {
-$filexmsgid1 = Amp\File\read(__DIR__."/data/messagetoeditbroadcast2.txt");  
+$filexmsgid1 = \Amp\File\read(__DIR__."/data/messagetoeditbroadcast2.txt");  
 
  if (file_exists(__DIR__."/data/messagetoeditbroadcast1.txt")) {
-$filexmsgid2 = Amp\File\read(__DIR__."/data/messagetoeditbroadcast1.txt");  
+$filexmsgid2 = \Amp\File\read(__DIR__."/data/messagetoeditbroadcast1.txt");  
 
 $bot_API_markup = ['inline_keyboard' => [[['text'=>"🔙",'callback_data'=>"admin_back"]]]];
 
@@ -864,31 +864,61 @@ unlink(__DIR__."/data/$filexmsgid1/media.txt");
 } catch (Throwable $e) {}
 }
 
-
+public static function getPlugins(): array {
+    return [\danog\MadelineProto\EventHandler\Plugin\RestartPlugin::class];
+}
+public static function getPluginPaths(): string|array|null {
+    return null;
+}
 }
 
 function RunBot(): void {
 	try {
-		
-$env = parse_ini_file(__DIR__ . '/.env');
-
+$env = parse_ini_file(__DIR__."/".'.env');
 if (!isset($env['API_ID'], $env['API_HASH'], $env['BOT_TOKEN'])) {
     die("Missing environment variables in .env\n");
 }
 
-$API_ID   = $env['API_ID'];
-$API_HASH = $env['API_HASH'];
+$API_ID    = $env['API_ID'];
+$API_HASH  = $env['API_HASH'];
 $BOT_TOKEN = $env['BOT_TOKEN'];
+$DB_FLAG = $env['DB_FLAG'] ?? 'no';
+$BOT_NAME  = $env['BOT_NAME'] ?? 'GetAnyMessage';
+$dbHost    = $env['DB_HOST'] ?? 'localhost';
+$dbPort    = $env['DB_PORT'] ?? 3306;
+$dbUser    = $env['DB_USER'] ?? 'mpuser';
+$dbPass    = $env['DB_PASS'] ?? 'mp_pass';
+$dbName    = $env['DB_NAME'] ?? 'madelineproto';
 
 $settings = new \danog\MadelineProto\Settings;
-
 $settings->setAppInfo((new \danog\MadelineProto\Settings\AppInfo)->setApiId((int)$API_ID)->setApiHash($API_HASH));
 
-GetAnyMessage::startAndLoopBot(__DIR__.'/bot.madeline', $BOT_TOKEN, $settings);
+$connection = (new \danog\MadelineProto\Settings\Connection())->setTimeout(600.0)->setRetry(true)->setMaxMediaSocketCount(1000);
+$settings->setConnection($connection);
+
+$files = (new \danog\MadelineProto\Settings\Files())->setUploadParallelChunks(7)->setDownloadParallelChunks(12);
+$settings->setFiles($files);
+
+$logger = (new \danog\MadelineProto\Settings\Logger)->setLevel(\danog\MadelineProto\Logger::ERROR);
+$settings->setLogger($logger);
+
+if($DB_FLAG != 'no'){
+$db = (new \danog\MadelineProto\Settings\Database\Mysql())
+    ->setUri("tcp://$dbHost:$dbPort")
+    ->setUsername($dbUser)
+    ->setPassword($dbPass)
+    ->setDatabase($dbName)
+    ->setEphemeralFilesystemPrefix("Session_{$BOT_NAME}");
+$settings->setDb($db);
+}
+
+GetAnyMessage::startAndLoopBot(__DIR__."/bot_{$BOT_NAME}.madeline", $BOT_TOKEN, $settings);
 
 } catch (\Throwable $e) {
-// if ($e instanceof \Amp\TimeoutException) {
-echo "\n" . $e->getMessage() . "\n";
+
+if (strpos($e->getMessage(), 'bad_msg_notification') !== false) exit(1);
+if ($e instanceof \Amp\TimeoutException || $e instanceof \Amp\CancelledException) exit(1);
+
 }
 }
 RunBot();

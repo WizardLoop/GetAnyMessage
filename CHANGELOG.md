@@ -25,3 +25,11 @@ All notable changes to the **GetAnyMessage** project will be documented in this 
 - Update statUsers in: **src/Handlers/AdminPanel.php**
 
 ---
+
+## [v1.0.3] - 2026-03-04
+
+### Added:
+- MySQL session support for storing bot sessions on servers with ephemeral file systems.
+- Restart plugin to allow programmatic bot restarts.
+
+---

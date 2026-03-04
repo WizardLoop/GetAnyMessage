@@ -72,10 +72,24 @@ Copy `.env.example` to `.env` and fill in:
 cp .env.example .env
 ```
 
-- `API_ID`
-- `API_HASH`
-- `BOT_TOKEN`
-- `ADMIN_ID`
+**Telegram Bot Settings:**
+
+- `API_ID` – Your API ID from [my.telegram.org](https://my.telegram.org)  
+- `API_HASH` – Your API hash from [my.telegram.org](https://my.telegram.org)  
+- `BOT_TOKEN` – Your bot token from [@BotFather](https://t.me/BotFather)  
+- `ADMIN` – Your username or user ID. Multiple admins supported, comma-separated (e.g., `1234,12345`)  
+- `BOT_NAME` – Your bot's name (default: `GetAnyMessage`)  
+
+**Database Settings (Optional, for MySQL session storage):**
+
+- `DB_FLAG` – Enable MySQL session storage (`yes`) or disable (`no` / leave empty)  
+- `DB_HOST` – MySQL host (default: `localhost`)  
+- `DB_PORT` – MySQL port (default: `3306`)  
+- `DB_USER` – MySQL username  
+- `DB_PASS` – MySQL password  
+- `DB_NAME` – MySQL database name  
+
+> ⚠️ If `DB_FLAG` is `no` or empty, all DB_* variables are ignored and the bot will use file-based session storage.
 
 ---
 
