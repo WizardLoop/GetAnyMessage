@@ -81,7 +81,7 @@ cp .env.example .env
 
 **Database Settings (Optional, for MySQL session storage):**
 - `DB_FLAG` - Enable MySQL session storage (`yes`) or disable (`no` / leave empty)  
-- `DB_HOST` - MySQL host (default: `localhost`)  
+- `DB_HOST` - MySQL host 
 - `DB_PORT` - MySQL port (default: `3306`)  
 - `DB_USER` - MySQL username  
 - `DB_PASS` - MySQL password  
