@@ -908,7 +908,8 @@ $db = (new \danog\MadelineProto\Settings\Database\Mysql())
     ->setUsername($dbUser)
     ->setPassword($dbPass)
     ->setDatabase($dbName)
-    ->setEphemeralFilesystemPrefix("Session_{$BOT_NAME}");
+    ->setEphemeralFilesystemPrefix("Session_{$BOT_NAME}")
+    ->setMaxConnections(10000);
 $settings->setDb($db);
 }
 
