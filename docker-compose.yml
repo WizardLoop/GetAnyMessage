@@ -8,3 +8,6 @@ services:
     volumes:
       - ./:/app
     command: php /app/src/bot.php
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
