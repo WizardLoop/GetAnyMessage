@@ -33,3 +33,10 @@ All notable changes to the **GetAnyMessage** project will be documented in this 
 - Restart plugin to allow programmatic bot restarts.
 
 ---
+
+## [v1.0.4] - 2026-03-04
+
+### Added:
+- Add max connections setting to bot configuration.
+
+---
