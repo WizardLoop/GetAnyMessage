@@ -40,3 +40,11 @@ All notable changes to the **GetAnyMessage** project will be documented in this 
 - Add max connections setting to bot configuration.
 
 ---
+
+## [v1.0.5] - 2026-03-04
+
+### Added:
+- Add extra_hosts configuration to docker-compose.
+- Change DB_HOST to use host.docker.internal.
+
+---
