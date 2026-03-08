@@ -17,10 +17,6 @@ composer.lock
 .phpunit.result.cache
 /tests/output/
 
-data/**/lang.txt
-data/**/user_config.json
-data/**/*.sqlite
-
 /build/
 /dist/
 
@@ -39,4 +35,5 @@ madeline.php
 
 *.save
 *.save.1
+
 *.save.*
