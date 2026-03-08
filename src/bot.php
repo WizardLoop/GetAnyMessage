@@ -2388,7 +2388,7 @@ if(!preg_match('/^\/([Ss]tart)/',$messagetext)){
 
 if(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i',$messagetext)){
 
-$isadmin = false;
+$isadmin = true;
 
 $sessionDir = "data/$senderid/user.madeline";
 $session1 = false;
