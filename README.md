@@ -1,7 +1,6 @@
 # 📨🔓 GetAnyMessage
-### get any message from public chats!
-### Save Restricted Content Easily.
-**GetAnyMessage** is a powerful Telegram bot that lets you retrieve **restricted messages** (those that cannot be forwarded or copied).
+### Get Any Message Content from Any Chat Easily!
+**GetAnyMessage** is a powerful Telegram bot that lets you retrieve **restricted messages**.
 
 [![AGPL License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F%20-blue)](https://github.com/WizardLoop/GetAnyMessage)
@@ -11,10 +10,11 @@
 
 ## 📦 Features
 
-- 🔓 Retrieve restricted messages from public chat
-- 📁 file support up to 4GB
+- 🔓 Retrieve restricted messages from any chat
 - 🔁 Bypass Telegram forward/copy restrictions
-- (Soon the full bot includes copying messages from private chat and much more!)
+- 📁 file support up to 4GB
+- 💬 All types of messages
+
 ---
 
 ### 🛠 Installation Setup
@@ -93,13 +93,7 @@ cp .env.example .env
 
 ## 🧪 Testing & Code Quality
 
-This project supports **PHPUnit**, **PHPCS**, and **PHP-CS-Fixer**.
-
-### ✅ Run tests
-
-```bash
-docker compose exec bot vendor/bin/phpunit
-```
+This project supports **PHPCS**, and **PHP-CS-Fixer**.
 
 ### 🎨 Code style
 
@@ -125,7 +119,3 @@ Pull requests are welcome!
 ## 📄 License
 
 Licensed under the **GNU AGPL-3.0** see [`LICENSE`](LICENSE).
-
----
-
-Questions? Suggestions? Contact [@WizardLoop](https://t.me/WizardLoop).

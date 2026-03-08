@@ -48,3 +48,11 @@ All notable changes to the **GetAnyMessage** project will be documented in this 
 - Change DB_HOST to use host.docker.internal.
 
 ---
+
+## [v1.1.0] - 2026-03-08
+
+### Added:
+- update to include the full source code!
+Includes login, copying of any type of chat including private/user/bot, and everything you need.
+
+---

@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
-<ruleset name="JewishPulse">
-    <description>PHP CodeSniffer configuration for JewishPulse</description>
+<ruleset name="GetAnyMessage">
+    <description>PHP CodeSniffer configuration</description>
     <file>src</file>
-    <file>tests</file>
     <exclude-pattern>vendor/*</exclude-pattern>
     <rule ref="PSR12"/>
 </ruleset>
