@@ -56,3 +56,11 @@ All notable changes to the **GetAnyMessage** project will be documented in this 
 Includes login, copying of any type of chat including private/user/bot, and everything you need.
 
 ---
+
+## [v1.1.1] - 2026-03-08
+
+### Changed:
+Change isadmin flag to true for specific message
+- Disable the force join
+
+---
