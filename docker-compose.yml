@@ -1,6 +1,6 @@
 services:
   getanymessage:
-    image: hub.madelineproto.xyz/danog/madelineproto
+    image: hub.madelineproto.xyz/danog/madelineproto:latest
     restart: always
     init: true
     tty: true
@@ -8,6 +8,4 @@ services:
     volumes:
       - ./:/app
     command: php /app/src/bot.php
-
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: "host"
