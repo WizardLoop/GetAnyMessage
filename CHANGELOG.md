@@ -64,3 +64,14 @@ Change isadmin flag to true for specific message
 - Disable the force join
 
 ---
+
+## [v1.2.0] - 2026-03-10
+
+### Added:
+- added /force_logout command to delete session file For manual account logout, when it is stuck.
+
+### Fixed:
+Refactor bot session handling and admin commands.
+- Refactor error handling and session management in the bot. Simplify admin command structure and improve readability.
+
+---
