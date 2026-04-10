@@ -2,12 +2,18 @@
 
 declare(strict_types=1);
 
-/**
+/** Copyright
  * Copyright WizardLoop (C)
  * This file is Written by wizardloop!
  * @author    wizardloop 
  * @copyright wizardloop
  */
+
+/* the bot used by:
+https://github.com/WizardLoop/BroadcastManager
+https://github.com/WizardLoop/TelegramUrlParser
+https://github.com/WizardLoop/album-bot
+*/
 
 $autoload = __DIR__.'/../vendor/autoload.php';
 if (!file_exists($autoload)) {
@@ -79,12 +85,11 @@ class GetAnyMessage extends SimpleEventHandler
 {
 
 public function onStart(): void {
-try {
-$this->sendMessageToAdmins("<b>The system has been restarted!</b>",parseMode: ParseMode::HTML);
-} catch (\Throwable $e) {}
+    try {
+        $this->sendMessageToAdmins("<b>The system has been restarted!</b>",parseMode: ParseMode::HTML);
+    } catch (\Throwable $e) {}
 }
 
-/* ========= SET BOT ADMINS ========= */
 public function getReportPeers(): array {
     $envPath = __DIR__ . '/.env';
         if (!file_exists($envPath)) {
@@ -99,7 +104,6 @@ public function getReportPeers(): array {
     return array_map('trim', explode(',', $env['ADMIN']));
 }
 
-/* ========= LEAVE CHATS ========= */
 #[FilterIncoming]
 public function leaveChats(GroupMessage | ChannelMessage $message): void {	
     try {
@@ -132,7 +136,7 @@ private static function deleteSessionFolder(string $folderPath): void {
     }
 private static function checkSessionIsConnected(int $senderId): bool {
 
-try {
+    try {
     $sessionDir = __DIR__ ."/data/$senderId/user.madeline";
     $invalid = false;
     $ipcState = $sessionDir."/ipcState.php";
@@ -141,21 +145,6 @@ try {
         $invalid = true;
     } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
         $invalid = true;
-    } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
-            self::deleteSessionFolder($sessionDir);
-			return false;
     } else {
 
         $MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
@@ -169,13 +158,33 @@ try {
         }
     }
 
-} catch (\Throwable $e) {
+    } catch (\Throwable $e) {
     return false;
-}
+    }
 
 }
 
-/* ========= album Handlers ========= */
+#[FilterCommandCaseInsensitive('force_logout')]
+public function forceLogout(Incoming & PrivateMessage & IsNotEdited $message): void {
+		try {
+if ($this->isSelfBot()) {
+$senderid = $message->senderId;
+$messageid = $message->id;
+
+$markup[] = [['text'=>"🔙 Back 🔙",'callback_data'=>"backmenu"]];
+$markup = [ 'inline_keyboard'=> $markup];
+
+$msg = "<b>Your account has been successfully logged out.</b>";
+$inputReplyToMessage = ['_' => 'inputReplyToMessage', 'reply_to_msg_id' => $messageid];
+$this->messages->sendMessage(peer: $message->senderId, reply_to: $inputReplyToMessage, message: $msg, reply_markup: $markup, parse_mode: 'HTML');
+
+$sessionDir = __DIR__ ."/data/$senderid/user.madeline";
+try { self::deleteSessionFolder($sessionDir); } catch (\Throwable) { }
+
+}
+} catch (Throwable $e) {}
+}
+
 private array $albumTimers = [];
 private function processAlbumPart(object $message) {
     $senderId  = $message->senderId;
@@ -329,7 +338,6 @@ ID: <code>$senderId</code>
     });
 }
 
-/* ========= start Handlers ========= */
 #[FilterCommandCaseInsensitive('start')]
 public function startCommand(Incoming & PrivateMessage & IsNotEdited  $message): void {
 		try {
@@ -342,51 +350,19 @@ $User_Full = $this->getInfo($message->senderId);
 $bot_API_markup[] = [['text'=>"Updates Channel 🔔",'url'=>"https://t.me/GetAnyMessageNews"]];
 $bot_API_markup[] = [['text'=>"🔧 Support",'callback_data'=>"Support"],['text'=>"Information 💬",'callback_data'=>"Information"]];	
 
-$sessionDir = __DIR__ ."/data/$senderid/user.madeline";
 try {
 
-    $invalid = false;
-    $ipcState = __DIR__ ."/$sessionDir/ipcState.php";
-
-    if (!is_dir($sessionDir)) {
-        $invalid = true;
-    } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
-        $invalid = true;
-    } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
+$checkSession = self::checkSessionIsConnected($senderid);
+if($checkSession){
+            $bot_API_markup[] = [
+                ['text'=>"My Account 📲",'callback_data'=>"MyAccount"]
+            ];
+}else{
         $bot_API_markup[] = [
             ['text'=>"📤 Upload Session",'callback_data'=>"UploadS"],
             ['text'=>"Login 📲",'callback_data'=>"Login"]
         ];
-            self::deleteSessionFolder($sessionDir);
-    } else {
-
-        $MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
-
-        if ($MadelineProtosession->getAuthorization() === API::LOGGED_IN) {
-            $bot_API_markup[] = [
-                ['text'=>"My Account 📲",'callback_data'=>"MyAccount"]
-            ];
-        } else {
-            try { $MadelineProtosession->logout(); } catch (\Throwable $e) {}
-            self::deleteSessionFolder($sessionDir);
-            $bot_API_markup[] = [
-                ['text'=>"📤 Upload Session",'callback_data'=>"UploadS"],
-                ['text'=>"Login 📲",'callback_data'=>"Login"]
-            ];
-        }
-    }
+}
 
 } catch (\Throwable $e) {
     $bot_API_markup[] = [
@@ -424,6 +400,7 @@ unlink(__DIR__ ."/data/$senderid/grs1.txt");
 }
 } catch (Throwable $e) {}
 }
+
 #[FilterButtonQueryData('backmenu')]
 public function backmenucommand(callbackQuery $query) {
 	try {
@@ -440,51 +417,19 @@ $first_name = "null";
 $bot_API_markup[] = [['text'=>"Updates Channel 🔔",'url'=>"https://t.me/GetAnyMessageNews"]];
 $bot_API_markup[] = [['text'=>"🔧 Support",'callback_data'=>"Support"],['text'=>"Information 💬",'callback_data'=>"Information"]];	
 
-$sessionDir = __DIR__ ."/data/$userid/user.madeline";
 try {
 
-    $invalid = false;
-    $ipcState = __DIR__ ."/$sessionDir/ipcState.php";
-
-    if (!is_dir($sessionDir)) {
-        $invalid = true;
-    } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
-        $invalid = true;
-    } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
+$checkSession = self::checkSessionIsConnected($userid);
+if($checkSession){
+            $bot_API_markup[] = [
+                ['text'=>"My Account 📲",'callback_data'=>"MyAccount"]
+            ];
+}else{
         $bot_API_markup[] = [
             ['text'=>"📤 Upload Session",'callback_data'=>"UploadS"],
             ['text'=>"Login 📲",'callback_data'=>"Login"]
         ];
-            self::deleteSessionFolder($sessionDir);
-    } else {
-
-        $MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
-
-        if ($MadelineProtosession->getAuthorization() === API::LOGGED_IN) {
-            $bot_API_markup[] = [
-                ['text'=>"My Account 📲",'callback_data'=>"MyAccount"]
-            ];
-        } else {
-            try { $MadelineProtosession->logout(); } catch (\Throwable $e) {}
-            self::deleteSessionFolder($sessionDir);
-            $bot_API_markup[] = [
-                ['text'=>"📤 Upload Session",'callback_data'=>"UploadS"],
-                ['text'=>"Login 📲",'callback_data'=>"Login"]
-            ];
-        }
-    }
+}
 
 } catch (\Throwable $e) {
     $bot_API_markup[] = [
@@ -517,7 +462,6 @@ $error = $e->getMessage();
 }
 }
 
-/* ========= info Handlers ========= */
 #[FilterButtonQueryData('Information')]
 public function infomenucommand(callbackQuery $query) {
       try {
@@ -544,6 +488,7 @@ We thank all the users that rely on us for this service, we are constantly worki
 
 } catch (Throwable $e) {}
 }
+
 #[FilterCommandCaseInsensitive('info')]
 public function infoCommand(Incoming & PrivateMessage  $message): void {
 		try {
@@ -568,7 +513,6 @@ We thank all the users that rely on us for this service, we are constantly worki
 } catch (Throwable $e) {}
 }
 
-/* ========= help Handlers ========= */
 #[FilterCommandCaseInsensitive('help')]
 public function helpCommand(Incoming & PrivateMessage  $message): void {
 				try {
@@ -592,6 +536,7 @@ $this->messages->sendMessage(no_webpage: true, peer: $message->senderId, reply_t
 }
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('help')]
 public function helpCommand2(callbackQuery $query) {
 	   try {
@@ -618,6 +563,7 @@ $query->editText($message = "
 
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('BotCommands')]
 public function BotCommands(callbackQuery $query) {
 	try {
@@ -650,6 +596,7 @@ Example: <code>/start</code>, <code>!start</code>, <code>.start</code>
 
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('LoginInfo')]
 public function LoginInfo(callbackQuery $query) {
 	try {
@@ -683,6 +630,7 @@ $query->editText($message = "
 
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('FAQ')]
 public function FAQcommand(callbackQuery $query) {
 	try {
@@ -715,11 +663,16 @@ open the chat profile/Play media in the chat/React with an emoji to one of the m
 or reconnect with your account.
 </blockquote>
 
+<b>if your account is stuck, and you can't log out:</b>
+Just: /force_logout
+To delete the session manually.
+
 <b>For help, join to support group.</b>
 ", $replyMarkup = $bot_API_markup, ParseMode::HTML, $noWebpage = true, $scheduleDate = NULL);
 
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('LinksFormat')]
 public function LinksFormat(callbackQuery $query) {
 	try {
@@ -743,6 +696,7 @@ $query->editText($message = "
 
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('infof1')]
 public function infof1(callbackQuery $query) {
 	try {
@@ -934,6 +888,7 @@ User ID + Message ID.
 
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('HowGetMessage')]
 public function HowGetMessage(callbackQuery $query) {
 	try {
@@ -989,6 +944,7 @@ Amp\File\write(__DIR__ ."/data/$userid/messagetodelete.txt", (string) $msgid);
 
 } catch (Throwable $e) { }
 }
+
 #[Handler]
 public function handleSupportMsg(Incoming & PrivateMessage $message): void {
            try {
@@ -1107,6 +1063,7 @@ try { unlink(__DIR__ ."/data/$senderid/messagetodelete.txt"); } catch (Throwable
 }
 } catch (Throwable $e) { }
 	}
+
 #[Handler]
 public function handlemashovMessagex(Incoming & PrivateMessage & IsReply & FromAdmin $message): void {
 try {
@@ -1125,7 +1082,6 @@ $last_name = $User_Full['User']['last_name']?? null;
 if($last_name == null){
 $last_name = "null";
 }
-
 
 try {
 $usernames = $User_Full['User']['usernames']?? null;
@@ -1152,8 +1108,9 @@ $username = "(null)";
 $username = "@".$username;
 }
 
-
 if(!preg_match('/^\/([Ss]tart)/',$messagetext)){  
+
+$meid = $this->getSelf()['id'];
 
 try {
 $kjhcdj = $message->replyToMsgId;
@@ -1287,6 +1244,7 @@ Choose the donation amount you want to give👇", reply_markup: $bot_API_markup,
 }
 } catch (Throwable $e) { }
 }
+
 #[FilterButtonQueryData('Donate')]
 public function DonateCommand2(callbackQuery $query) {
 try {
@@ -1369,6 +1327,7 @@ Choose the donation amount you want to give👇", $replyMarkup = $bot_API_markup
 
 } catch (Throwable $e) {}
 }
+
 public function onupdateBotPrecheckoutQuery($update) {
 		try{
 if ($this->isSelfBot()) {
@@ -1379,6 +1338,7 @@ $sucses = $this->messages->setBotPrecheckoutResults(success: true, query_id: $qu
 }
 } catch (\Throwable $e) {}
 }
+
 public function onUpdateNewMessage($update) {
 		try{
 if ($this->isSelfBot()) {
@@ -1456,42 +1416,10 @@ $msgid = $query->messageId;
 
 try {
 
-$sessionDir = "data/$userid/user.madeline";
 try {
 
-    $invalid = false;
-    $ipcState = "$sessionDir/ipcState.php";
-
-    if (!is_dir($sessionDir)) {
-        $invalid = true;
-    } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
-        $invalid = true;
-    } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
-$message = "Please enter your phone number along with the country code:
-Example: <code>+19876543210</code>
-
-<i>Soon it will also be possible to upload sessions(Pyrogram, Teleton, Zerobias)</i>
-";
-Amp\File\write("data/$userid/grs1.txt", 'login1');
-Amp\File\write("data/$userid/messagetodelete.txt", (string) $msgid);	
-    } else {
-
-        $MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
-if ($MadelineProtosession->getAuthorization() === API::LOGGED_IN) {
-
-
+$checkSession = self::checkSessionIsConnected($userid);
+if($checkSession){
 $message = "
 You already have a connected account.";
 }else{
@@ -1501,10 +1429,8 @@ Example: <code>+19876543210</code>
 <i>Soon it will also be possible to upload sessions(Pyrogram, Teleton, Zerobias)</i>
 ";
 Amp\File\write("data/$userid/grs1.txt", 'login1');
-Amp\File\write("data/$userid/messagetodelete.txt", (string) $msgid);
-    }
-
-	}
+Amp\File\write("data/$userid/messagetodelete.txt", (string) $msgid);	
+}
 
 } catch (\Throwable $e) {
 $message = "Please enter your phone number along with the country code:
@@ -1523,6 +1449,7 @@ $query->editText($message = $message, $replyMarkup = $bot_API_markup, ParseMode:
 
 } catch (Throwable $e) {}
 }
+
 #[Handler]
 public function handleLogin(Incoming & PrivateMessage $message): void {
 $messagetext = $message->message;
@@ -1774,7 +1701,9 @@ $bot_API_markup = ['inline_keyboard' =>
     ]
 ];
 
-$this->messages->editMessage(peer: $senderid, id: $sentMessage2, message: "Now send me the code you received:", reply_markup: $bot_API_markup, parse_mode: 'HTML');
+$this->messages->editMessage(peer: $senderid, id: $sentMessage2, message: "Now send me the code you received:
+add spaces or - between each digit.
+Ex: <code>1 2 3 4 5</code> or <code>1-2-3-4-5</code>", reply_markup: $bot_API_markup, parse_mode: 'HTML');
 
 Amp\File\write("data/$senderid/grs1.txt", 'login2');
 Amp\File\write("data/$senderid/messagetodelete.txt", (string) $sentMessage2);	
@@ -2050,6 +1979,7 @@ rmdir("data/$senderid/user.madeline");
 } catch (Throwable $e) {}
 
 }
+
 #[FilterButtonQueryData('defaultAPI')]
 public function defaultAPI(callbackQuery $query) {
 	try {
@@ -2092,7 +2022,9 @@ $bot_API_markup = ['inline_keyboard' =>
     ]
 ];
 
-$this->messages->editMessage(peer: $userid, id: $sentMessage2, message: "Now send me the code you received:", reply_markup: $bot_API_markup, parse_mode: 'HTML');
+$this->messages->editMessage(peer: $userid, id: $sentMessage2, message: "Now send me the code you received:
+add spaces or - between each digit.
+Ex: <code>1 2 3 4 5</code> or <code>1-2-3-4-5</code>", reply_markup: $bot_API_markup, parse_mode: 'HTML');
 
 Amp\File\write("data/$userid/grs1.txt", 'login2');
 Amp\File\write("data/$userid/messagetodelete.txt", (string) $sentMessage2);	
@@ -2115,6 +2047,7 @@ $this->messages->editMessage(peer: $userid, id: $sentMessage2, message: "❌ $er
 $error = $e->getMessage();
 	}
 }
+
 #[FilterButtonQueryData('ownAPI')]
 public function ownAPI(callbackQuery $query) {
 	try {
@@ -2143,6 +2076,7 @@ Amp\File\write("data/$userid/messagetodelete.txt", (string) $msgid);
 $error = $e->getMessage();
 	}
 }
+
 #[FilterButtonQueryData('MyAccount')]
 public function MyAccount(callbackQuery $query) {
 $userid = $query->userId;
@@ -2153,30 +2087,12 @@ try {
 $sessionDir = "data/$userid/user.madeline";
 try {
 
-    $invalid = false;
-    $ipcState = "$sessionDir/ipcState.php";
-
-    if (!is_dir($sessionDir)) {
-        $invalid = true;
-    } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
-        $invalid = true;
-    } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
+$checkSession = self::checkSessionIsConnected($userid);
+if(!$checkSession){
 $message = "❌ You do not have an account connected.";
     } else {
 
-        $MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
+$MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
 if ($MadelineProtosession->getAuthorization() === API::LOGGED_IN) {
 
 $me = $MadelineProtosession->getSelf();
@@ -2303,6 +2219,7 @@ $query->editText($message = $message, $replyMarkup = $bot_API_markup, ParseMode:
 
 } catch (Throwable $e) {}
 }
+
 #[FilterButtonQueryData('Logout')]
 public function logoutCommand(callbackQuery $query) {
 try {
@@ -2312,26 +2229,8 @@ $msgid = $query->messageId;
 $sessionDir = "data/$userid/user.madeline";
 try {
 
-    $invalid = false;
-    $ipcState = "$sessionDir/ipcState.php";
-
-    if (!is_dir($sessionDir)) {
-        $invalid = true;
-    } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
-        $invalid = true;
-    } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
+$checkSession = self::checkSessionIsConnected($userid);
+if(!$checkSession){
 $message = "❌ You do not have an account connected.";
             self::deleteSessionFolder($sessionDir);
     } else {
@@ -2358,7 +2257,7 @@ $query->editText($message = $message, $replyMarkup = $bot_API_markup, ParseMode:
 
 /* ========= Message Handlers ========= */
 #[Handler]
-public function handlegetmsg(Incoming & PrivateMessage $message): void {		
+public function handleGetMessage(Incoming & PrivateMessage & IsNotEdited $message): void {		
 try {
 if ($this->isSelfBot()) {
 try {
@@ -2395,35 +2294,13 @@ $session1 = false;
 $mepremium = false;
 try {
 
-    $invalid = false;
-    $ipcState = "$sessionDir/ipcState.php";
-
-    if (!is_dir($sessionDir)) {
-        $invalid = true;
-    } elseif (!is_file($ipcState) || !is_readable($ipcState)) {
-        $invalid = true;
+$checkSession = self::checkSessionIsConnected($senderid);
+if(!$checkSession){
     } else {
-
-        $content = \amp\File\read($ipcState);
-
-        if (
-            str_contains($content, 'ExitFailure') &&
-            time() - filemtime($ipcState) > 20
-        ) {
-            $invalid = true;
-        }
-    }
-
-    if ($invalid) {
-    } else {
-
-        $MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
+$MadelineProtosession = new \danog\MadelineProto\API($sessionDir);
 if ($MadelineProtosession->getAuthorization() === API::LOGGED_IN) {
 $session1 = true;
 $mepremium = $MadelineProtosession->getSelf()['premium']?? false;
-}else{
-        try { $MadelineProtosession->logout(); } catch (\Throwable $e) {}
-            self::deleteSessionFolder($sessionDir);
     }
 
 	}
@@ -2465,7 +2342,6 @@ $sentMessage = $this->messages->sendMessage(peer: $message->senderId, reply_to: 
 For all supported formats /help", parse_mode: 'HTML');
 }
 if (preg_match('/^http(s)?:\/\/t\.me\/.+\/?$/i', $messagetext)) {
-
 if(!function_exists("extractTelegramPaths")){
 function extractTelegramPaths($url) {
 
@@ -2691,28 +2567,13 @@ $resultx = [
 
         try { unlink(__DIR__."/"."data/$senderid/thumb.jpg"); } catch (\Throwable $e) {}
         if ($thumbFileId && in_array($result['file_type'], ['video', 'animation', 'video_note', 'audio', 'voice', 'document'])) {
-            \Amp\async(function () use ($thumbFileId, $senderid, $MadelineProto) {
                 try {
                     $MadelineProto->downloadToFile($thumbFileId, __DIR__."/"."data/$senderid/thumb.jpg");
                 } catch (\Throwable $e) {}
-            });
         }
 
   if (!function_exists('createProgressBar')) {
 function createProgressBar($count) {
-/*
-    $count = max(0, min(100, $count));
-    
-
-    $totalLength = 20;
-    $filledLength = (int) ($totalLength * ($count / 100));
-    
-
-    $progressBar = '[' . str_repeat('█', $filledLength) . str_repeat('░', $totalLength - $filledLength) . ']';
-
-*/
-
-
 
     $count = max(0, min(100, $count)); // Ensure $count is within 0-100
     $totalLength = 10; // Fixed length of the progress bar
@@ -3965,11 +3826,9 @@ $resultx = [
 
         try { unlink(__DIR__."/"."data/$senderid/thumb.jpg"); } catch (\Throwable $e) {}
         if ($thumbFileId && in_array($result['file_type'], ['video', 'animation', 'video_note', 'audio', 'voice', 'document'])) {
-            \Amp\async(function () use ($thumbFileId, $senderid, $MadelineProto) {
                 try {
                     $MadelineProto->downloadToFile($thumbFileId, __DIR__."/"."data/$senderid/thumb.jpg");
                 } catch (\Throwable $e) {}
-            });
         }
 
 
@@ -5240,11 +5099,9 @@ $resultx = [
 
         try { unlink(__DIR__."/"."data/$senderid/thumb.jpg"); } catch (\Throwable $e) {}
         if ($thumbFileId && in_array($result['file_type'], ['video', 'animation', 'video_note', 'audio', 'voice', 'document'])) {
-            \Amp\async(function () use ($thumbFileId, $senderid, $MadelineProto) {
                 try {
                     $MadelineProto->downloadToFile($thumbFileId, __DIR__."/"."data/$senderid/thumb.jpg");
                 } catch (\Throwable $e) {}
-            });
         }
 
 
@@ -6632,11 +6489,11 @@ $resultx = [
 
         try { unlink(__DIR__."/"."data/$senderid/thumb.jpg"); } catch (\Throwable $e) {}
         if ($thumbFileId && in_array($result['file_type'], ['video', 'animation', 'video_note', 'audio', 'voice', 'document'])) {
-            \Amp\async(function () use ($thumbFileId, $senderid, $MadelineProto) {
+            //\Amp\async(function () use ($thumbFileId, $senderid, $MadelineProto) {
                 try {
                     $MadelineProto->downloadToFile($thumbFileId, __DIR__."/"."data/$senderid/thumb.jpg");
                 } catch (\Throwable $e) {}
-            });
+            //});
         }
 
 
@@ -8038,36 +7895,30 @@ $this->messages->sendMessage(peer: $senderid, reply_to: $inputReplyToMessage, me
 } catch (\Throwable $exception) {}
 }
 
+
 /* ========= Admin Handlers ========= */
+    public const adminPanelMsg = "🛠 <b>System Management Menu!</b>";
+    public function getAdminKeyboard() {
+    $markup[] = [['text'=>"📊 Statistics",'callback_data'=>"Statistics"]];
+    $markup[] = [['text'=>"📮 Broadcast",'callback_data'=>"Broadcast"]];
+    $markup = [ 'inline_keyboard'=> $markup];
+    return $markup;
+    }
+
 #[FilterCommandCaseInsensitive('admin')]
 public function admincommand(Incoming & PrivateMessage & FromAdmin $message): void {
 try {
 $senderid = $message->senderId;
-$User_Full = $this->getInfo($message->senderId);
-$first_name = $User_Full['User']['first_name']?? null;
-if($first_name == null){
-$first_name = "null";
-}
-$last_name = $User_Full['User']['last_name']?? null;
-if($last_name == null){
-$last_name = "null";
-}
-$username = $User_Full['User']['username']?? null;
-if($username == null){
-$username = "null";
-}
 
-$bot_API_markup[] = [['text'=>"📊 Statistics",'callback_data'=>"Statistics"]];
-$bot_API_markup[] = [['text'=>"📮 Broadcast",'callback_data'=>"Broadcast"]];
-$bot_API_markup = [ 'inline_keyboard'=> $bot_API_markup,];
-
-$this->messages->sendMessage(peer: $message->senderId, message: "🛠 <b>System Management Menu!</b>", reply_markup: $bot_API_markup, parse_mode: 'HTML');
+$markup = $this->getAdminKeyboard();
+$msg = self::adminPanelMsg;
+$this->messages->sendMessage(peer: $message->senderId, message: $msg, reply_markup: $markup, parse_mode: 'HTML');
     if (file_exists("data/$senderid/grs1.txt")) {
 unlink("data/$senderid/grs1.txt");
 }
-
 } catch (Throwable $e) {}
 }
+
 #[FilterButtonQueryData('backadmin')] 
 public function adminbackcommand(callbackQuery $query) {
 	try {
@@ -8076,12 +7927,9 @@ $userid = $query->userId;
 $ADMIN = $this->getAdminIds();
 if (in_array((string)$userid, array_map('strval', $ADMIN), true)) {
 	
-$bot_API_markup[] = [['text'=>"📊 Statistics",'callback_data'=>"Statistics"]];
-$bot_API_markup[] = [['text'=>"📮 Broadcast",'callback_data'=>"Broadcast"]];
-$bot_API_markup = [ 'inline_keyboard'=> $bot_API_markup,];
-
-
-$query->editText($message = "🛠 <b>System Management Menu!</b>", $replyMarkup = $bot_API_markup, ParseMode::HTML, $noWebpage = false, $scheduleDate = NULL);
+$markup = $this->getAdminKeyboard();
+$msg = self::adminPanelMsg;
+$query->editText($message = $msg, $replyMarkup = $markup, ParseMode::HTML, $noWebpage = false, $scheduleDate = NULL);
 if (file_exists("data/$userid/grs1.txt")) {
 unlink("data/$userid/grs1.txt");
 }
@@ -8091,6 +7939,7 @@ unlink("data/$userid/grs1.txt");
 $error = $e->getMessage();
 }
 }
+
 #[FilterButtonQueryData('backadmin2')] 
 public function adminbackcommand2(callbackQuery $query) {
 	try {
@@ -8112,12 +7961,9 @@ if(preg_match("/MESSAGE_DELETE_FORBIDDEN/",$estring)){
 }
 }
 
-$bot_API_markup[] = [['text'=>"📊 Statistics",'callback_data'=>"Statistics"]];
-$bot_API_markup[] = [['text'=>"📮 Broadcast",'callback_data'=>"Broadcast"]];
-$bot_API_markup = [ 'inline_keyboard'=> $bot_API_markup,];
-
-
-$this->messages->sendMessage(peer: $userid, message: "🛠 <b>System Management Menu!</b>", reply_markup: $bot_API_markup, parse_mode: 'HTML');
+$markup = $this->getAdminKeyboard();
+$msg = self::adminPanelMsg;
+$this->messages->sendMessage(peer: $userid, message: $msg, reply_markup: $markup, parse_mode: 'HTML');
 
 if (file_exists("data/$userid/grs1.txt")) {
 unlink("data/$userid/grs1.txt");
@@ -9141,33 +8987,25 @@ $API_HASH  = $env['API_HASH'];
 $BOT_TOKEN = $env['BOT_TOKEN'];
 $BOT_NAME  = $env['BOT_NAME'] ?? 'GetAnyMessage';
 $DB_FLAG   = $env['DB_FLAG'] ?? 'no';
+
+$settings = new \danog\MadelineProto\Settings;
+$settings->setAppInfo((new \danog\MadelineProto\Settings\AppInfo)->setApiId((int)$API_ID)->setApiHash($API_HASH));
+
+$connection = (new \danog\MadelineProto\Settings\Connection())->setTimeout(600.0)->setRetry(true)->setMaxMediaSocketCount(1000);
+$settings->setConnection($connection);
+
+$files = (new \danog\MadelineProto\Settings\Files())->setUploadParallelChunks(7)->setDownloadParallelChunks(12);
+$settings->setFiles($files);
+
+$logger = (new \danog\MadelineProto\Settings\Logger)->setLevel(\danog\MadelineProto\Logger::ERROR);
+$settings->setLogger($logger);
+
+if($DB_FLAG === 'yes'){
 $dbHost    = $env['DB_HOST'];
 $dbPort    = $env['DB_PORT'];
 $dbUser    = $env['DB_USER'];
 $dbPass    = $env['DB_PASS'];
 $dbName    = $env['DB_NAME'];
-
-$settings = new \danog\MadelineProto\Settings;
-$settings->setAppInfo((new \danog\MadelineProto\Settings\AppInfo)->setApiId((int)$API_ID)->setApiHash($API_HASH));
-
-/* add this on weak server
-->setMaxMediaSocketCount(1000)
-*/
-$connection = (new \danog\MadelineProto\Settings\Connection())->setTimeout(600.0)->setRetry(true);
-$settings->setConnection($connection);
-
-/* enable this on weak server
-$files = (new \danog\MadelineProto\Settings\Files())->setUploadParallelChunks(7)->setDownloadParallelChunks(12);
-$settings->setFiles($files);
-
-$settings->getPeer()->setFullFetch(false)->setCacheAllPeersOnStartup(false);
-*/
-
-$logger = (new \danog\MadelineProto\Settings\Logger)->setLevel(\danog\MadelineProto\Logger::ERROR);
-$settings->setLogger($logger);
-
-// ---- MySQL --- db
-if($DB_FLAG != 'no'){
 $db = (new \danog\MadelineProto\Settings\Database\Mysql())
     ->setUri("tcp://$dbHost:$dbPort")
     ->setUsername($dbUser)
@@ -9181,10 +9019,8 @@ $settings->setDb($db);
 GetAnyMessage::startAndLoopBot(__DIR__."/bot_{$BOT_NAME}.madeline", $BOT_TOKEN, $settings);
 
 } catch (\Throwable $e) {
-
 if (strpos($e->getMessage(), 'bad_msg_notification') !== false) exit(1);
 if ($e instanceof \Amp\TimeoutException || $e instanceof \Amp\CancelledException) exit(1);
-
 }
 }
 RunBot();
