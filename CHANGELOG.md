@@ -65,7 +65,7 @@ Change isadmin flag to true for specific message
 
 ---
 
-## [v1.2.0] - 2026-03-10
+## [v1.2.0] - 2026-04-10
 
 ### Added:
 - added /force_logout command to delete session file For manual account logout, when it is stuck.
