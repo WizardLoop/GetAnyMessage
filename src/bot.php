@@ -9007,7 +9007,7 @@ $dbUser    = $env['DB_USER'];
 $dbPass    = $env['DB_PASS'];
 $dbName    = $env['DB_NAME'];
 $db = (new \danog\MadelineProto\Settings\Database\Mysql())
-    ->setUri("tcp://$dbHost:$dbPort")
+    ->setUri("tls://$dbHost:$dbPort")
     ->setUsername($dbUser)
     ->setPassword($dbPass)
     ->setDatabase($dbName)
