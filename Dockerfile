@@ -1,10 +1,13 @@
 FROM hub.madelineproto.xyz/danog/madelineproto:latest
 
-# Copy all bot files from your repo
+# Copy files
 COPY . /app/src
 
-# Set the correct working directory
+# Set working directory
 WORKDIR /app/src
 
-# Run the bot
-CMD ["php", "/app/src/bot.php"]
+# Install composer dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Start bot
+CMD ["php", "bot.php"]
