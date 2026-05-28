@@ -1,17 +1,23 @@
-FROM hub.madelineproto.xyz/danog/madelineproto:latest
+FROM php:8.3-cli
 
-COPY . /app
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl \
+    libzip-dev \
+    && docker-php-ext-install zip
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
+
+COPY . .
+
 RUN composer install --no-dev --optimize-autoloader
 
-WORKDIR /app/src
+RUN mkdir -p /app/session
 
-CMD sh -c ' \
-  echo "API_ID=${API_ID}" > .env && \
-  echo "API_HASH=${API_HASH}" >> .env && \
-  echo "BOT_TOKEN=${BOT_TOKEN}" >> .env && \
-  echo "ADMIN=${ADMIN}" >> .env && \
-  echo "BOT_NAME=${BOT_NAME:-GetAnyMessage}" >> .env && \
-  echo "DB_FLAG=${DB_FLAG:-no}" >> .env && \
-  php bot.php'
+EXPOSE 8000
+
+CMD sh -c "php -S 0.0.0.0:8000 & php src/bot.php"
