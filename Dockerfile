@@ -1,9 +1,11 @@
-FROM hub.madelineproto.xyz/danog/madelineproto:latest
-
-WORKDIR /app/src
-
-# Copy all bot files
-COPY . /app/src
-
-# Run the bot
-CMD ["php", "bot.php"]
+services:
+  getanymessage:
+    image: hub.madelineproto.xyz/danog/madelineproto:latest
+    restart: always
+    init: true
+    tty: true
+    working_dir: /app/src
+    volumes:
+      - ./:/app
+    command: php /app/src/bot.php
+    network_mode: "host"
