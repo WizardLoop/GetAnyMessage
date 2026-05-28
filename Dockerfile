@@ -1,13 +1,17 @@
 FROM hub.madelineproto.xyz/danog/madelineproto:latest
 
-# Copy all files from repo to container
 COPY . /app
 
-# Set working directory
+WORKDIR /app
+RUN composer install --no-dev --optimize-autoloader
+
 WORKDIR /app/src
 
-# Install dependencies (from repo root where composer.json lives)
-RUN cd /app && composer install --no-dev --optimize-autoloader
-
-# Run the bot from the src directory
-CMD ["php", "bot.php"]
+CMD sh -c ' \
+  echo "API_ID=${API_ID}" > .env && \
+  echo "API_HASH=${API_HASH}" >> .env && \
+  echo "BOT_TOKEN=${BOT_TOKEN}" >> .env && \
+  echo "ADMIN=${ADMIN}" >> .env && \
+  echo "BOT_NAME=${BOT_NAME:-GetAnyMessage}" >> .env && \
+  echo "DB_FLAG=${DB_FLAG:-no}" >> .env && \
+  php bot.php'
