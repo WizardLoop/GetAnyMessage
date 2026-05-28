@@ -3,7 +3,7 @@
   "description": "A Telegram Bot to receive messages from restricted chats.",
   "type": "project",
   "require": {
-    "php": "^8.4",
+    "php": "^8.3",
     "danog/madelineproto": "^8.6",
     "wizardloop/broadcastmanager": "^3.0"
   },
