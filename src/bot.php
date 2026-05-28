@@ -1471,7 +1471,7 @@ try {
 $usernames = $User_Full['User']['usernames']?? null;
 $newLangsCommausername = null;
 $peerList2username = [];
-foreach ($usernames as $username) {
+foreach (($usernames ?? []) as $username) {
 $usernamexfr = $username['username'];
 $usernamexfr = "@".$usernamexfr;
 $peerList2username[]=$usernamexfr;
