@@ -1471,7 +1471,7 @@ try {
 $usernames = $User_Full['User']['usernames']?? null;
 $newLangsCommausername = null;
 $peerList2username = [];
-foreach ($usernames as $username) {
+foreach (($usernames ?? []) as $username) {
 $usernamexfr = $username['username'];
 $usernamexfr = "@".$usernamexfr;
 $peerList2username[]=$usernamexfr;
@@ -9007,7 +9007,7 @@ $dbUser    = $env['DB_USER'];
 $dbPass    = $env['DB_PASS'];
 $dbName    = $env['DB_NAME'];
 $db = (new \danog\MadelineProto\Settings\Database\Mysql())
-    ->setUri("tcp://$dbHost:$dbPort")
+    ->setUri("tls://$dbHost:$dbPort")
     ->setUsername($dbUser)
     ->setPassword($dbPass)
     ->setDatabase($dbName)
